@@ -4,7 +4,7 @@ class CreateTasks < ActiveRecord::Migration
       t.integer :state
       t.string :name
       t.text :description
-      t.references :project, index: true
+      t.references :project, type: :uuid, index: true
 
       t.timestamps null: false
     end

@@ -22,7 +22,7 @@ module V1
       param :path, :id, :string, :required, 'User Id'
     end
     def show
-      project = Project.find_by params[:id]
+      project = Project.find_by id: params[:id]
       if project.present?
         render json: project
       else

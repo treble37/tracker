@@ -6,7 +6,7 @@
 #  state       :integer
 #  name        :string
 #  description :text
-#  project_id  :integer
+#  project_id  :uuid
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #
@@ -18,17 +18,17 @@
 class Task < ActiveRecord::Base
   validates :name, presence: true
 
-  validates :state, presence: true
-
-  belongs_to :project
-
-  after_initialize :set_default_state
-
   enum state: {
     in_progress: 0,
     todo: 1,
     done: 2
   }
+
+  validates :state, presence: true, inclusion: { in: states.keys }
+
+  belongs_to :project
+
+  after_initialize :set_default_state
 
   private
 

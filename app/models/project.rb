@@ -20,6 +20,8 @@ class Project < ActiveRecord::Base
 
   has_many :tasks, dependent: :destroy
 
+  accepts_nested_attributes_for :tasks
+
   after_initialize :set_default_state
 
   enum state: {
