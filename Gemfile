@@ -10,6 +10,7 @@ gem 'rack-cors'
 gem 'rails', '4.2.6'
 gem 'rails-api'
 gem 'swagger-docs'
+gem 'twilio-ruby'
 
 group :development, :test do
   gem 'active_cucumber'
@@ -17,6 +18,7 @@ group :development, :test do
   gem 'cucumber-rails', require: false
   gem 'database_cleaner'
   gem 'dotenv'
+  gem 'dotenv-rails'
   gem 'factory_girl_rails'
   gem 'hashdiff'
   gem 'mortadella'

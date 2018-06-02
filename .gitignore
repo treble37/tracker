@@ -21,5 +21,6 @@
 /.ruby-version
 /public/api
 .byebug_history
+.env
 # A list of my questions so I can keep it all in one place
 questions.txt

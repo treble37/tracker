@@ -16,6 +16,8 @@
 #
 
 class Task < ActiveRecord::Base
+  include Twil
+
   validates :name, presence: true
 
   enum state: {
