@@ -1,10 +1,5 @@
 include Swagger::Docs::ImpotentMethods
-#
-#class Swagger::Docs::Config
-#  def self.base_api_controller
-#    ApplicationController
-#  end
-#end
+
 Swagger::Docs::Config.base_api_controller = ApplicationController
 Swagger::Docs::Config.register_apis({
   '1.0' => {

@@ -9,6 +9,6 @@ Project.destroy_all
 (1..5).each do |i|
   project = Project.create!(name: "Project #{i}", description: "Project Desc #{i}")
   (1..2).each do |j|
-    project.tasks.create(name: "P#{i}-Task #{j}", description: "P#{i} Desc-Task #{j}")
+    project.tasks.create!(name: "P#{i}-Task #{j}", description: "P#{i} Desc-Task #{j}")
   end
 end

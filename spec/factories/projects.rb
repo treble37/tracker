@@ -16,7 +16,14 @@
 
 FactoryGirl.define do
   factory :project do
+    id { SecureRandom.uuid }
     name { generate(:name) }
     description { generate(:description) }
+
+    factory :project_with_tasks do
+      after :create do |project|
+        create_list :task, 2, project: project
+      end
+    end
   end
 end

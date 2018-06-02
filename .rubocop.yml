@@ -31,6 +31,9 @@ Style/EmptyLinesAroundModuleBody:
 Style/EmptyLiteral:
   Enabled: false
 
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
 Style/MethodDefParentheses:
   Enabled: false
 

@@ -5,7 +5,7 @@ module V1
     swagger_api :index do
       summary 'List all tasks'
       notes 'This lists all the active tasks'
-      param :path, :project_id, :uuid, :required, 'Project Id'
+      param :path, :project_id, :string, :required, 'Project Id'
       param :query, :page, :integer, :optional, 'page number of results, default 1'
       param :query, :page_size, :integer, :optional, 'number of results per page, default 25'
     end
@@ -20,7 +20,7 @@ module V1
 
     swagger_api :show do
       summary 'Fetch a single Task'
-      param :path, :project_id, :uuid, :required, 'Project Id'
+      param :path, :project_id, :string, :required, 'Project Id'
       param :path, :id, :string, :required, 'Task Id'
     end
     def show
@@ -34,43 +34,63 @@ module V1
 
     swagger_api :create do
       summary 'Creates a new Task or Tasks'
-      param :path, :project_id, :uuid, :required, 'Project Id'
+      param :path, :project_id, :string, :required, 'Project Id'
       param :form, :name, :string, :optional, 'Task name'
       param :form, :description, :string, :optional, 'Task description'
       param :form, :state, :string, :optional, 'Task state'
     end
     def create
       project = Project.find_by id: params[:project_id]
-      if project.present? && project.tasks.create(create_task_params)
-        render json: project.tasks, status: 201
-      elsif project.present?
-        render json: { errors: project.errors.full_messages }, status: 400
+      task = project.present? ? project.tasks.create(task_params) : nil
+      if project.present? && task.present?
+        render json: task, status: 201
       else
-        render json: { errors: ['Project(s) not found'] }, status: 404
+        render json: { errors: ['Unable to create task'] }, status: 400
       end
     end
 
     swagger_api :update do
       summary 'Updates an existing Task or Tasks'
-      param :path, :project_id, :uuid, :required, 'Project Id'
+      param :path, :project_id, :string, :required, 'Project Id'
+      param :path, :id, :string, :required, 'Task Id'
+      param :form, :name, :string, :optional, 'Task name'
+      param :form, :description, :string, :optional, 'Task description'
+      param :form, :state, :string, :optional, 'Task state'
+    end
+
+    def update
+      task = Task.find_by(project_id: params[:project_id], id: params[:id])
+      if task.present? && task.update_attributes(task_params)
+        render json: task
+      elsif task.present?
+        render json: { errors: task.errors.full_messages }, status: 400
+      else
+        render json: { errors: ['Task not found'] }, status: 404
+      end
+    end
+
+    swagger_api :bulk_update do
+      summary 'Updates an existing Task or Tasks'
+      param :path, :project_id, :string, :required, 'Project Id'
       param :path, :id, :string, :required, 'Task Id'
       param :form, :project, :tasks_attributes, :required, 'Array of task attributes for nested update'
     end
 
     swagger_model :tasks_attributes do
-      property :tasks_attributes, :array, :required, 'Array of task attributes', { "items" => { "$ref" => "task" } }
+      property :tasks_attributes, :array, :required, 'Array of task attributes', { 'items' => { '$ref' => 'task' } }
     end
 
     swagger_model :task do
-      description "nested task attributes for a specific project"
+      description 'nested task attributes for a specific project'
       property :id, :string, :required, 'Task Id'
       property :name, :string, :optional, 'Task name'
       property :description, :string, :optional, 'Task description'
       property :state, :string, :optional, 'Task state'
     end
-    def update
+
+    def bulk_update
       project = Project.find_by id: params[:project_id]
-      if project.present? && project.update_attributes(task_params)
+      if project.present? && project.update_attributes(bulk_task_params)
         render json: project.tasks
       elsif project.present?
         render json: { errors: project.errors.full_messages }, status: 400
@@ -79,18 +99,17 @@ module V1
       end
     end
 
-
     private
 
     def index_params
       params.permit(:page, :page_size, :project_id).to_h.symbolize_keys
     end
 
-    def create_task_params
+    def task_params
       params.permit(:name, :description, :state)
     end
 
-    def task_params
+    def bulk_task_params
       params.require(:project).permit(tasks_attributes: [:id, :name, :description, :state])
     end
   end

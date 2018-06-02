@@ -27,7 +27,7 @@ ActiveRecord::Schema.define(version: 20180601043148) do
 
   add_index "projects", ["name"], name: "index_projects_on_name", unique: true, using: :btree
 
-  create_table "tasks", force: :cascade do |t|
+  create_table "tasks", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.integer  "state"
     t.string   "name"
     t.text     "description"

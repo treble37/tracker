@@ -2,7 +2,7 @@
 #
 # Table name: tasks
 #
-#  id          :integer          not null, primary key
+#  id          :uuid             not null, primary key
 #  state       :integer
 #  name        :string
 #  description :text
@@ -21,9 +21,9 @@ class Task < ActiveRecord::Base
   validates :name, presence: true
 
   enum state: {
+    todo: -1,
     in_progress: 0,
-    todo: 1,
-    done: 2
+    done: 1
   }
 
   validates :state, presence: true, inclusion: { in: states.keys }
@@ -35,6 +35,6 @@ class Task < ActiveRecord::Base
   private
 
   def set_default_state
-    self.state ||= :in_progress
+    self.state ||= :todo
   end
 end

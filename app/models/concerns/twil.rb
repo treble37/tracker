@@ -30,11 +30,16 @@ module Twil
   end
 
   def text_update
-    @client = Twilio::REST::Client.new config.twilio_account_sid, config.twilio_auth_token
-    @client.api.account.messages.create(
+    twilio_client.api.account.messages.create(
       from: config.from_phone_number,
       to: config.to_phone_number,
-      body: "Task: #{self.name}, state: #{self.state}"
+      body: "Name: #{name}, state: #{state}"
     )
+  end
+
+  private
+
+  def twilio_client
+    @client ||= Twilio::REST::Client.new config.twilio_account_sid, config.twilio_auth_token
   end
 end

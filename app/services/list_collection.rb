@@ -10,11 +10,6 @@ class ListCollection
     [response, errors]
   end
 
-  def collection_type
-    fail NotImplementedError,
-         'Please override in subclass, return a symbol representing the type of item in the collection'
-  end
-
   def collection
     fail NotImplementedError,
          'Please override in subclass, return an active relation of results'
