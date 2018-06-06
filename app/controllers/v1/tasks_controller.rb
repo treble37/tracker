@@ -24,7 +24,7 @@ module V1
       param :path, :id, :string, :required, 'Task Id'
     end
     def show
-      task = Task.find_by id: params[:id]
+      task = Task.find_by project_id: params[:project_id], id: params[:id]
       if task.present?
         render json: task
       else
@@ -41,8 +41,8 @@ module V1
     end
     def create
       project = Project.find_by id: params[:project_id]
-      task = project.present? ? project.tasks.create(task_params) : nil
-      if project.present? && task.present?
+      task = project.present? ? project.tasks.build(task_params) : nil
+      if task.present? && task.save
         render json: task, status: 201
       else
         render json: { errors: ['Unable to create task'] }, status: 400
